@@ -11,23 +11,26 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable{
-private static final long serialVersionUID = 1L;
-	@Id//avisa qual é a chave primaria. generate = auto incremento
+public class User implements Serializable {
+	private static final long serialVersionUID = 1L;
+	@Id // avisa qual é a chave primaria. generate = auto incremento
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String email;
 	private String phone;
 	private String password;
-	//Coloca o nome que tem associação com a outra tabela
-	@OneToMany(mappedBy = "client")
+	// Coloca o nome que tem associação com a outra tabela
+	@JsonIgnore //Faz ignorar o Jso que faz com que fique chamando em lupping por ser uma associação de mão dupla, então
+	//colocamos em um dos lados para parar o looping. preferencialmente colocar do lado oneToMany
+	//meio que puxa as informações da outra tabela causando o loop
+	@OneToMany(mappedBy = "client")//nome do atributo do outro lado da associação da tabela order	
 	private List<Order> orders = new ArrayList<>();
-	
 
-	
 	public User() {
 
 	}
@@ -80,9 +83,10 @@ private static final long serialVersionUID = 1L;
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public List<Order> getOrders() {
 		return orders;
-	}	
+	}
 
 	@Override
 	public int hashCode() {
@@ -108,7 +112,5 @@ private static final long serialVersionUID = 1L;
 			return false;
 		return true;
 	}
-
-
 
 }

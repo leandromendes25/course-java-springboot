@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.leandroprojeto.entites.enums.OrderStatus;
 @Entity 
 @Table(name = "tb_order")
 public class Order implements Serializable{
@@ -18,28 +22,34 @@ public class Order implements Serializable{
 //Para realizar o instant da compra é melhor sempre utlizar Instant
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
+	//mostrado no formato string do formato iso 8601, pattern = definir formato
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'",timezone = "GMT")
 	private Instant moment;
+	//Grava no banco valores númericos, porém para o mundo externo continua sendo orderStatus, permitindo controlar o
+	//código dos order
+	private Integer orderStatus;
 	
-	@ManyToOne 
+	@ManyToOne // Serve para instruir o JPA a construir chave estrangeira
 	@JoinColumn(name = "client_id") //nome chave estrangeira
 	private User client;
 
 	public Order() {
 	}
 
-	public Order(long id, Instant moment, User client) {
+	public Order(Long id, Instant moment,OrderStatus orderStatus, User client) {
 		super();
 		this.id = id;
 		this.moment = moment;
+		setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -57,6 +67,17 @@ public class Order implements Serializable{
 
 	public void setClient(User client) {
 		this.client = client;
+	}
+	
+
+	public OrderStatus getOrderStatus() {
+		return OrderStatus.valueOf(orderStatus);
+	}
+	//recebe orderStatus, guarda internamente em um num inteiro
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if (orderStatus != null) {
+		this.orderStatus = orderStatus.getCode();
+		}
 	}
 
 	@Override
