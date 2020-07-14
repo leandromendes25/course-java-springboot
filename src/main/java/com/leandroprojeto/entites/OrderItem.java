@@ -6,6 +6,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leandroprojeto.entites.pk.OrderItemPK;
 @Entity
 @Table(name = "tb_order_item")
@@ -14,7 +15,7 @@ public class OrderItem implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId // Para chave composta
-	private OrderItemPK id;
+	private OrderItemPK id = new OrderItemPK(); //Sempre que formos criar uma chave do tipo composto tempos que instancia-lá.
 
 	private Integer quantity;
 	private Double price;
@@ -29,7 +30,8 @@ public class OrderItem implements Serializable{
 		this.quantity = quantity;
 		this.price = price;	
 	}
-
+	//No java o que vale é o get por isso colocamos o Json aqui
+	@JsonIgnore
 	public Order getOrder() {
 		return id.getOrder();
 		}
