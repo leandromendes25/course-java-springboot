@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import com.leandroprojeto.entites.Category;
 import com.leandroprojeto.entites.Order;
 import com.leandroprojeto.entites.OrderItem;
+import com.leandroprojeto.entites.Payment;
 import com.leandroprojeto.entites.Product;
 import com.leandroprojeto.entites.User;
 import com.leandroprojeto.entites.enums.OrderStatus;
@@ -80,7 +81,10 @@ public class TestConfig implements CommandLineRunner {
 		
 		orderItemRepository.saveAll(Arrays.asList(oi1,oi2,oi3,oi4));
 		
+		Payment pay1 = new Payment(null,Instant.parse("2019-07-21T05:42:10Z"),o2);
+		//em um caso de pagamento 1 para 1 nós chamamos o meotdo dentro do OrderItem e os associamos
+		o1.setPayment(pay1);
 		
-		
+		orderRepository.save(o1);
 	}
 }
