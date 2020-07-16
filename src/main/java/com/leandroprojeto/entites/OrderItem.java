@@ -75,7 +75,10 @@ public class OrderItem implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-
+	// o que vale na plataforma java é o get então o utilizamos
+	public Double getSubTotal() {
+		return price * quantity;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

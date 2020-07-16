@@ -24,7 +24,7 @@ public class User implements Serializable {
 	private String email;
 	private String phone;
 	private String password;
-	// Coloca o nome que tem associação com a outra tabela
+	
 	@JsonIgnore //Faz ignorar o Jso que faz com que fique chamando em lupping por ser uma associação de mão dupla, então
 	//colocamos em um dos lados para parar o looping. preferencialmente colocar do lado oneToMany
 	//meio que puxa as informações da outra tabela causando o loop
