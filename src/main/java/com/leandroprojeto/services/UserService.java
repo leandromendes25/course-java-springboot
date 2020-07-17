@@ -8,26 +8,46 @@ import org.springframework.stereotype.Service;
 
 import com.leandroprojeto.entites.User;
 import com.leandroprojeto.repositories.UserRepository;
+
 //Registra a classe como um componente Spring e permitindo ser injetado junto do Autowired
 //@Component
 //Para deixar mais semanticamente mais especifico vamos utilizar O service, que também é um componente
 @Service
 public class UserService {
 
-@Autowired
-private UserRepository repository;
+	@Autowired
+	private UserRepository repository;
 
-public List<User>findAll(){
-	return repository.findAll();
-}
-public User findById(Long id) {
-	Optional<User> obj = repository.findById(id);
-	return obj.get();
-}
-public User insert(User obj) {
-	return repository.save(obj);
-}
-public void delete(Long id) {
-	repository.deleteById(id);
-}
+	public List<User> findAll() {
+		return repository.findAll();
+	}
+
+	public User findById(Long id) {
+		Optional<User> obj = repository.findById(id);
+		return obj.get();
+	}
+
+	public User insert(User obj) {
+		return repository.save(obj);
+	}
+
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
+
+	public User update(Long id, User obj) {
+		// GetOne não vai no banco, ele so vai deixar obj monitorado pelo JPA(entity)
+		// para trabalha nele.
+		// pegar os valoes do entity e atualizar com o obj
+		User entity = repository.getOne(id);
+		updateData(entity, obj);
+		return repository.save(entity);
+	}
+
+	private void updateData(User entity, User obj) {
+		entity.setName(obj.getName());
+		entity.setEmail(obj.getEmail());
+		entity.setPhone(obj.getPhone());
+		
+	}
 }
