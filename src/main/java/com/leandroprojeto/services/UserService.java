@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.leandroprojeto.entites.User;
 import com.leandroprojeto.repositories.UserRepository;
+import com.leandroprojeto.services.exceptions.ResourceNotFoundException;
 
 //Registra a classe como um componente Spring e permitindo ser injetado junto do Autowired
 //@Component
@@ -24,7 +25,8 @@ public class UserService {
 
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		//vai tentar get se não tiver usuario vai lançar a excessão
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User obj) {
