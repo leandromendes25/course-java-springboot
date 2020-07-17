@@ -3,6 +3,8 @@ package com.leandroprojeto.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,7 +30,7 @@ public class UserService {
 
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		//vai tentar get se não tiver usuario vai lançar a excessão
+		// vai tentar get se não tiver usuario vai lançar a excessão
 		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
@@ -37,13 +39,13 @@ public class UserService {
 	}
 
 	public void delete(Long id) {
-		
+
 		try {
 			repository.deleteById(id);
-			//RuntimeException,podemos usá-lo para capturar o erro, como o empty
-		}catch(EmptyResultDataAccessException e) {//captruamos a excessão
+			// RuntimeException,podemos usá-lo para capturar o erro, como o empty
+		} catch (EmptyResultDataAccessException e) {// captruamos a excessão
 			throw new ResourceNotFoundException(id);// e a tratamos
-		}catch(DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DataBaseException(e.getMessage());
 		}
 	}
@@ -52,15 +54,18 @@ public class UserService {
 		// GetOne não vai no banco, ele so vai deixar obj monitorado pelo JPA(entity)
 		// para trabalha nele.
 		// pegar os valoes do entity e atualizar com o obj
-		User entity = repository.getOne(id);
+		try{User entity = repository.getOne(id);
 		updateData(entity, obj);
 		return repository.save(entity);
+		}catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 	private void updateData(User entity, User obj) {
 		entity.setName(obj.getName());
 		entity.setEmail(obj.getEmail());
 		entity.setPhone(obj.getPhone());
-		
+
 	}
 }
